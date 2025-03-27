@@ -1,0 +1,28 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+
+# 1. 模擬房價數據（平方公尺, 價格）
+X = np.array([30, 50, 70, 90, 110, 130, 150]).reshape(-1, 1)  # 房屋大小
+y = np.array([300, 500, 700, 900, 1100, 1300, 1500])  # 房價（萬元）
+
+# 2. 建立並訓練模型
+model = LinearRegression()
+model.fit(X, y)
+
+# 3. 預測新房價
+X_test = np.array([40, 80, 120]).reshape(-1, 1)
+y_pred = model.predict(X_test)
+
+# 4. 視覺化結果
+plt.scatter(X, y, color='blue', label="實際數據")
+plt.plot(X, model.predict(X), color='red', label="預測線")
+plt.scatter(X_test, y_pred, color='green', marker='x', s=100, label="預測值")
+plt.xlabel("房屋大小 (平方公尺)")
+plt.ylabel("房價 (萬元)")
+plt.legend()
+plt.show()
+
+# 5. 印出預測結果
+for size, price in zip(X_test.flatten(), y_pred.flatten()):
+    print(f"預測 {size} 平方公尺的房價：約 {price:.0f} 萬元")

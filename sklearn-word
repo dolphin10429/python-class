@@ -1,0 +1,31 @@
+from sklearn.datasets import fetch_20newsgroups
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.linear_model import LogisticRegression
+
+# 1. 下載大量新聞數據集
+categories = ['rec.sport.baseball', 'rec.sport.hockey', 'talk.politics.misc', 'sci.med', 'comp.graphics']
+news_data = fetch_20newsgroups(subset='train', categories=categories, remove=('headers', 'footers', 'quotes'))
+
+# 2. 向量化處理
+vectorizer = TfidfVectorizer(ngram_range=(1,2), max_features=50000)
+X = vectorizer.fit_transform(news_data.data)
+y = news_data.target
+
+# 3. 訓練 Logistic Regression 模型
+model = LogisticRegression(class_weight='balanced', max_iter=1000)
+model.fit(X, y)
+
+# 4. 測試
+test_texts = [
+    "The latest hockey game was intense!",
+    "The government announced a new economic plan.",
+    "A famous singer released a new album.",
+    "The baseball team won the championship.",
+    "New medical research shows promising results."
+]
+X_test = vectorizer.transform(test_texts)
+predictions = model.predict(X_test)
+
+# 5. 顯示結果
+for news, category in zip(test_texts, predictions):
+    print(f"新聞: {news} → 預測分類: {news_data.target_names[category]}")

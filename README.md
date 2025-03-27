@@ -1,2 +1,0 @@
-# python-class
-AI class

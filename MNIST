@@ -1,0 +1,31 @@
+import tensorflow as tf
+import matplotlib.pyplot as plt
+
+# 1. 載入 MNIST 手寫數字數據集
+mnist = tf.keras.datasets.mnist
+(x_train, y_train), (x_test, y_test) = mnist.load_data()
+
+# 2. 標準化數據（將像素值縮放到 0~1 之間）
+x_train, x_test = x_train / 255.0, x_test / 255.0
+
+# 3. 建立 CNN 模型
+model = tf.keras.Sequential([
+    tf.keras.layers.Conv2D(32, (3,3), activation='relu', input_shape=(28,28,1)),
+    tf.keras.layers.MaxPooling2D(2,2),
+    tf.keras.layers.Flatten(),
+    tf.keras.layers.Dense(128, activation='relu'),
+    tf.keras.layers.Dense(10, activation='softmax')  # 10 個數字類別
+])
+
+# 4. 訓練模型
+model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+model.fit(x_train, y_train, epochs=5, validation_data=(x_test, y_test))
+
+# 5. 測試模型
+predictions = model.predict(x_test[:5])
+
+# 6. 顯示結果
+for i in range(5):
+    plt.imshow(x_test[i], cmap='gray')
+    plt.title(f"預測: {predictions[i].argmax()}")
+    plt.show()
